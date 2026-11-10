@@ -11,7 +11,7 @@ class RideRequest:
         self.year = year
         self.submitted = time.time()
         
-class cab:
+class Cab:
     def __init__(self,driver_name, seats, destination, slot):
         self.driver_name = driver_name
         self.seats = seats
@@ -24,6 +24,12 @@ class cab:
 
 def main():
     pending_requests =[]
+    
+    cabs = [
+      Cab("Ramesh", 4, "Delhi", "Morning"),
+      Cab("Suresh", 3, "Jaipur", "Night"),
+      Cab("Mukesh", 4, "Delhi", "Evening"),
+    ]
     
     while True:
         print("CAB POOL MATCHER")
@@ -44,8 +50,22 @@ def main():
             
         elif choice =="2":
             print("STUDENTS STILL WAITING")
-            for i in pending_requests:
-                print(i)
+            if not pending_requests:
+                print("No students waiting")
+            else:
+                for i in pending_requests:
+                    print(f"Name:{i.name}| Destination:{i.destination}| Time:{i.slot}| Year:{i.year}")
+                    
+                    
+            print("ALL CAB STATUS")
+            for cab in cabs:
+                status = "LEFT" if cab.has_left else "OPEN"
+                count = len(cab.passengers)
+                print(
+                f"Driver: {cab.driver_name} | Route: {cab.destination}"
+                f" ({cab.slot}) | Occupied: {count}/{cab.seats} | Status:"
+                f" {status}"
+                )
                 
         elif choice =="3":
             print("Exiting...")
