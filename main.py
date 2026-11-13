@@ -1,80 +1,87 @@
-#make classes
-#get clean input
-#make terminal ui
-import time
+from methods import RideRequest,cities,time_slots
+from storage import load_cabs,save_cabs,load_requests,save_requests
 
-class RideRequest:
-    def __init__(self,name,destination,slot,year):
-        self.name = name
-        self.destination = destination
-        self.slot = slot
-        self.year = year
-        self.submitted = time.time()
-        
-class Cab:
-    def __init__(self,driver_name, seats, destination, slot):
-        self.driver_name = driver_name
-        self.seats = seats
-        self.destination = destination
-        self.slot = slot
-        self.has_left = False
-        self.passengers = []   
+def add_ride_request(pending_requests):
+    print("\n--- New Ride Request ---")
+    name = input("Student's name: ")
+    destination = input(f"Destination ({'/'.join(cities)}): ")
+    time_slot = input(f"Time slot ({'/'.join(time_slots)}): ")
+    
+    try:
+        year = int(input("Year (1 to 5): ").strip())
+    except ValueError:
+        print(f"Error: not a valid year. Please enter a number from (1-5).")
+        return
+
+    try:
+        request = RideRequest(student_name=name,destination=destination,time_slot=time_slot,year=year)
+        pending_requests.append(request)
+        print(f"Added request: {request}")
+    except ValueError as err:
+        print(f"Error: {err}")
 
 
+def view_status(waiting_requests,cabs):
+    print("\n=== Students Currently Waiting ===")
+    if not waiting_requests:
+        print("No students waiting.")
+    else:
+        i=1
+        for req in waiting_requests:
+            print(f"{i}. {req}")
+            i+=1
+
+    print("\n=== All Cabs ===")
+    if not cabs:
+        print("No cabs available.")
+    else:
+        open_cabs = [cab for cab in cabs if not cab.has_left]
+        departed_cabs = [cab for cab in cabs if cab.has_left]
+
+        print("Open Cabs:")
+        if not open_cabs:
+            print("None")
+        else:
+            i =1
+            for cab in open_cabs:
+                print(f"{i}. {cab}")
+                i+=1
+
+        print("Already Left:")
+        if not departed_cabs:
+            print("None")
+        else:
+            i=1
+            for cab in departed_cabs:
+                print(f"{i}. {cab}")
+                i+=1
 
 def main():
-    pending_requests =[]
-    
-    cabs = [
-      Cab("Ramesh", 4, "Delhi", "Morning"),
-      Cab("Suresh", 3, "Jaipur", "Night"),
-      Cab("Mukesh", 4, "Delhi", "Evening"),
-    ]
-    
+    cabs = load_cabs()
+    pending_requests = load_requests()
+
     while True:
-        print("CAB POOL MATCHER")
-        print("1. Add a new ride request")
-        print("2. See everyone waiting and cabs")
-        print("3. Quit the app")
-        
-        choice = input("Select an Option (1-3)=")
-        
+        print("\n==============================")
+        print("      Cab Sharing Menu")
+        print("==============================")
+        print("1. Add a new ride request.")
+        print("2. See everyone still waiting, plus all cabs.")
+        print("3. Quit the app.")
+
+        choice = input("Choose an option (1-3): ").strip()
+
         if choice == "1":
-            name = input("Student name=")
-            destination = input("Enter Destination=")
-            slot = input("Enter time slot(Morning/Afternoon/Evening/Night)=")
-            year = input("Enter Year of Study=")
-            request = RideRequest(name,destination,slot,year)
-            pending_requests.append(request)
-            print("added request")
-            
-        elif choice =="2":
-            print("STUDENTS STILL WAITING")
-            if not pending_requests:
-                print("No students waiting")
-            else:
-                for i in pending_requests:
-                    print(f"Name:{i.name}| Destination:{i.destination}| Time:{i.slot}| Year:{i.year}")
-                    
-                    
-            print("ALL CAB STATUS")
-            for cab in cabs:
-                status = "LEFT" if cab.has_left else "OPEN"
-                count = len(cab.passengers)
-                print(
-                f"Driver: {cab.driver_name} | Route: {cab.destination}"
-                f" ({cab.slot}) | Occupied: {count}/{cab.seats} | Status:"
-                f" {status}"
-                )
-                
-        elif choice =="3":
-            print("Exiting...")
+            add_ride_request(pending_requests)
+        elif choice == "2":
+            view_status(pending_requests, cabs)
+        elif choice == "3":
+            save_cabs(cabs)
+            save_requests(pending_requests)
+            print("Data saved. Goodbye!")
             break
-        
         else:
-            print("Invalid choice!!")
-            
-            
+            print("Invalid option. Please enter 1, 2, or 3.")
+
+
 if __name__ == "__main__":
     main()
-    
