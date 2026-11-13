@@ -4,27 +4,31 @@
     "seats": 4,
     "destination": "Delhi",
     "time_slot": "Morning",
-    "has_left": false
+    "has_left": false,
+    "students": []
   },
   {
     "driver_name": "Suresh",
     "seats": 3,
     "destination": "Jaipur",
     "time_slot": "Night",
-    "has_left": false
+    "has_left": false,
+    "students": []
   },
   {
     "driver_name": "Mukesh",
     "seats": 4,
     "destination": "Delhi",
     "time_slot": "Evening",
-    "has_left": false
+    "has_left": false,
+    "students": []
   },
   {
     "driver_name": "Rajesh",
     "seats": 2,
     "destination": "Jaipur",
     "time_slot": "Afternoon",
-    "has_left": false
+    "has_left": false,
+    "students": []
   }
 ]

@@ -1,6 +1,42 @@
 from methods import RideRequest,cities,time_slots
 from storage import load_cabs,save_cabs,load_requests,save_requests
 
+def find_matches(pending_requests, cabs):
+    print("\n=== Match Preview (No Seats Assigned) ===")
+
+    open_cabs = [cab for cab in cabs if not cab.has_left]
+
+    if not open_cabs:
+        print("No open cabs available.")
+        return
+
+    remaining_pool = list(pending_requests)
+
+    i=1
+    for cab in open_cabs:
+        seats_available = cab.seats - len(cab.students)
+        print(
+            f"\n{i}. Cab: {cab.driver_name} -> {cab.destination} [{cab.time_slot}] "
+            f"(Available seats: {seats_available}/{cab.seats})"
+        )
+        i+=1
+
+        if seats_available <= 0:
+            print("Matched students: None (Cab is full)")
+            continue
+
+        # Filter students matching destination and time slot
+        eligible = [req for req in remaining_pool if req.destination == cab.destination and req.time_slot == cab.time_slot]
+        matched = eligible[:seats_available]
+
+        if not matched:
+            print("Matched students: None")
+        else:
+            for student in matched:
+                print(f"- {student.student_name} (Year {student.year}) | Submitted: {student.submitted_at}")
+                remaining_pool.remove(student)
+
+
 def add_ride_request(pending_requests):
     print("\n--- New Ride Request ---")
     name = input("Student's name: ")
@@ -66,22 +102,22 @@ def main():
         print("==============================")
         print("1. Add a new ride request.")
         print("2. See everyone still waiting, plus all cabs.")
-        print("3. Quit the app.")
+        print("3. Find matches (preview).")
+        print("4. Quit the app.")
 
-        choice = input("Choose an option (1-3): ").strip()
+        choice = input("Choose an option (1-4)")
 
         if choice == "1":
             add_ride_request(pending_requests)
         elif choice == "2":
             view_status(pending_requests, cabs)
         elif choice == "3":
+            find_matches(pending_requests, cabs)
+        elif choice == "4":
             save_cabs(cabs)
             save_requests(pending_requests)
             print("Data saved. Goodbye!")
             break
-        else:
-            print("Invalid option. Please enter 1, 2, or 3.")
-
 
 if __name__ == "__main__":
     main()

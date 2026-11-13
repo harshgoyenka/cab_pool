@@ -4,7 +4,7 @@ cities = ["Delhi", "Jaipur"]
 time_slots = ["Morning", "Afternoon", "Evening", "Night"]
 
 class RideRequest:
-    def __init__(self,student_name,destination,time_slot,year, submitted_at = None,):
+    def __init__(self,student_name,destination,time_slot,year,submitted_at = None,):
         name = student_name.strip()
         if not name:
             raise ValueError("Student name cannot be empty.")
@@ -53,7 +53,7 @@ class RideRequest:
 
 
 class Cab:
-    def __init__(self,driver_name,seats,destination,time_slot,has_left=False):
+    def __init__(self,driver_name,seats,destination,time_slot,has_left=False,students=[]):
         driver = driver_name.strip()
         if not driver:
             raise ValueError("Driver name cannot be empty.")
@@ -74,6 +74,7 @@ class Cab:
         self.destination = formatted_dest
         self.time_slot = formatted_slot
         self.has_left = bool(has_left)
+        self.students = students
 
     def to_dict(self):
         return {
@@ -82,16 +83,19 @@ class Cab:
             "destination": self.destination,
             "time_slot": self.time_slot,
             "has_left": self.has_left,
+            "students": [student.to_dict() for student in self.students],
         }
 
     @classmethod
     def from_dict(cls, data):
+        students = [RideRequest.from_dict(s) for s in data.get("students", [])]
         return cls(
             driver_name=data["driver_name"],
             seats=int(data["seats"]),
             destination=data["destination"],
             time_slot=data["time_slot"],
             has_left=data.get("has_left", False),
+            students=students,
         )
 
     def __str__(self):
@@ -99,7 +103,9 @@ class Cab:
             status = "Already Left"
         else:
             status = "Open"
+        passengers = (", ".join(s.student_name for s in self.students) if self.students else "None")
         return (
             f"Driver: {self.driver_name} | {self.destination} ({self.time_slot}) | "
-            f"Seats: {self.seats} | Status: {status}"
+            f"Seats: {len(self.students)}/{self.seats} | Status: {status} | "
+            f"Students: [{passengers}]"
         )
