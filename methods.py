@@ -109,3 +109,25 @@ class Cab:
             f"Seats: {len(self.students)}/{self.seats} | Status: {status} | "
             f"Students: [{passengers}]"
         )
+        
+
+    def dispatch(self, pending_requests):
+        if self.has_left:
+            raise ValueError(f"Cab driven by {self.driver_name} has already left; nobody new can be added.")
+
+        seats_available = self.seats - len(self.students)
+        boarded = []
+
+        if seats_available > 0:
+            eligible = [req
+                for req in pending_requests
+                if req.destination == self.destination and req.time_slot == self.time_slot
+            ]
+            boarded = eligible[:seats_available]
+
+            self.students.extend(boarded)
+            for student in boarded:
+                pending_requests.remove(student)
+
+        self.has_left = True
+        return boarded

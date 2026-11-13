@@ -4,8 +4,37 @@
     "seats": 4,
     "destination": "Delhi",
     "time_slot": "Morning",
-    "has_left": false,
-    "students": []
+    "has_left": true,
+    "students": [
+      {
+        "student_name": "Aarav Sharma",
+        "destination": "Delhi",
+        "time_slot": "Morning",
+        "year": 2,
+        "submitted_at": "2026-11-13 19:12:31"
+      },
+      {
+        "student_name": "Priya Nair",
+        "destination": "Delhi",
+        "time_slot": "Morning",
+        "year": 4,
+        "submitted_at": "2026-11-13 19:12:31"
+      },
+      {
+        "student_name": "Rohan Verma",
+        "destination": "Delhi",
+        "time_slot": "Morning",
+        "year": 1,
+        "submitted_at": "2026-11-13 19:12:31"
+      },
+      {
+        "student_name": "Ananya Gupta",
+        "destination": "Delhi",
+        "time_slot": "Morning",
+        "year": 4,
+        "submitted_at": "2026-11-13 19:12:31"
+      }
+    ]
   },
   {
     "driver_name": "Suresh",

@@ -1,6 +1,35 @@
 from methods import RideRequest,cities,time_slots
 from storage import load_cabs,save_cabs,load_requests,save_requests
 
+def dispatch_cab(pending_requests, cabs):
+    print("\n=== Let a Cab Leave ===")
+    open_cabs = [cab for cab in cabs if not cab.has_left]
+
+    if not open_cabs:
+        print("No open cabs available to send off.")
+        return
+    i=1
+    for cab in open_cabs:
+        print(f"{i}. {cab}")
+        i+=1
+
+    choice = int(input("Choose an open cab to dispatch (0 to cancel)"))
+    if choice == 0:
+        print("Dispatch cancelled.")
+        return
+
+    selected_cab = open_cabs[choice - 1]
+    boarded = selected_cab.dispatch(pending_requests)
+
+    print(f"\nDispatched: {selected_cab.driver_name} -> {selected_cab.destination} "
+        f"[{selected_cab.time_slot}] | Final Seats: {len(selected_cab.students)}/{selected_cab.seats}")
+    if boarded:
+        print("Newly boarded students (removed from waiting list):")
+        for student in boarded:
+            print(f"  - {student.student_name} (Year {student.year})")
+    else:
+        print("No new waiting students boarded.")
+
 def find_matches(pending_requests, cabs):
     print("\n=== Match Preview (No Seats Assigned) ===")
 
@@ -101,11 +130,12 @@ def main():
         print("      Cab Sharing Menu")
         print("==============================")
         print("1. Add a new ride request.")
-        print("2. See everyone still waiting, plus all cabs.")
+        print("2. See everyone still waiting, plus all cabs (both open and already left).")
         print("3. Find matches (preview).")
-        print("4. Quit the app.")
+        print("4. Let a cab leave.")
+        print("5. Quit the app.")
 
-        choice = input("Choose an option (1-4)")
+        choice = input("Choose an option (1-5)")
 
         if choice == "1":
             add_ride_request(pending_requests)
@@ -114,6 +144,8 @@ def main():
         elif choice == "3":
             find_matches(pending_requests, cabs)
         elif choice == "4":
+            dispatch_cab(pending_requests, cabs)
+        elif choice == "5":
             save_cabs(cabs)
             save_requests(pending_requests)
             print("Data saved. Goodbye!")
