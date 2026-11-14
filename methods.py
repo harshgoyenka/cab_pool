@@ -1,10 +1,11 @@
-from datetime import datetime 
+from datetime import datetime
+import heapq
 
 cities = ["Delhi", "Jaipur"]
 time_slots = ["Morning", "Afternoon", "Evening", "Night"]
 
 class RideRequest:
-    def __init__(self,student_name,destination,time_slot,year,submitted_at = None,):
+    def __init__(self,student_name,destination,time_slot,year,submitted_at = None):
         name = student_name.strip()
         if not name:
             raise ValueError("Student name cannot be empty.")
@@ -24,7 +25,7 @@ class RideRequest:
         self.destination = formatted_dest
         self.time_slot = formatted_slot
         self.year = year
-        self.submitted_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.submitted_at = submitted_at or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     def to_dict(self):
         return {
@@ -50,6 +51,7 @@ class RideRequest:
             f"{self.student_name} (Year {self.year}) -> {self.destination} "
             f"[{self.time_slot}] | Submitted: {self.submitted_at}"
         )
+
 
 
 class Cab:
@@ -99,10 +101,7 @@ class Cab:
         )
 
     def __str__(self):
-        if self.has_left:
-            status = "Already Left"
-        else:
-            status = "Open"
+        status = "open" if self.has_left==False else "closed"
         passengers = (", ".join(s.student_name for s in self.students) if self.students else "None")
         return (
             f"Driver: {self.driver_name} | {self.destination} ({self.time_slot}) | "
@@ -111,7 +110,7 @@ class Cab:
         )
         
 
-    def dispatch(self, pending_requests):
+    def dispatch(self, trip_queue):
         if self.has_left:
             raise ValueError(f"Cab driven by {self.driver_name} has already left; nobody new can be added.")
 
@@ -119,15 +118,17 @@ class Cab:
         boarded = []
 
         if seats_available > 0:
-            eligible = [req
-                for req in pending_requests
-                if req.destination == self.destination and req.time_slot == self.time_slot
-            ]
-            boarded = eligible[:seats_available]
-
-            self.students.extend(boarded)
-            for student in boarded:
-                pending_requests.remove(student)
+            boarded = []
+            key = (self.destination,self.time_slot)
+            req = trip_queue.get(key,[])
+            
+            while req and seats_available >0:
+                i = heapq.heappop(req)
+                boarded.append(i[-1])
+                seats_available-=1
+                
+            if not trip_queue.get(key):
+                trip_queue.pop(key, None)      
 
         self.has_left = True
         return boarded
