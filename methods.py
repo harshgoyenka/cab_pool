@@ -55,7 +55,7 @@ class RideRequest:
 
 
 class Cab:
-    def __init__(self,driver_name,seats,destination,time_slot,has_left=False,students=[]):
+    def __init__(self,driver_name,seats,destination,time_slot,has_left=False,students=None):
         driver = driver_name.strip()
         if not driver:
             raise ValueError("Driver name cannot be empty.")
@@ -76,7 +76,7 @@ class Cab:
         self.destination = formatted_dest
         self.time_slot = formatted_slot
         self.has_left = bool(has_left)
-        self.students = students
+        self.students = students or []
 
     def to_dict(self):
         return {
@@ -118,7 +118,6 @@ class Cab:
         boarded = []
 
         if seats_available > 0:
-            boarded = []
             key = (self.destination,self.time_slot)
             req = trip_queue.get(key,[])
             
@@ -130,5 +129,6 @@ class Cab:
             if not trip_queue.get(key):
                 trip_queue.pop(key, None)      
 
+        self.students.extend(boarded)
         self.has_left = True
         return boarded

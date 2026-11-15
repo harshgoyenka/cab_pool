@@ -1,6 +1,9 @@
 from methods import RideRequest,cities,time_slots
 from storage import load_cabs,save_cabs,load_requests,save_requests
 import heapq
+import itertools
+
+counter = itertools.count()
 
 def generate_queue(pending_requests):
     trip_queue={}
@@ -12,7 +15,7 @@ def push_queue(i,trip_queue):
     key = (i.destination,i.time_slot)
     if key not in trip_queue:
         trip_queue[key] = []
-    heapq.heappush(trip_queue[key],(-i.year,i.submitted_at,i))
+    heapq.heappush(trip_queue[key],(-i.year,i.submitted_at,next(counter),i))
 
 
 def dispatch_cab(trip_queue, cabs):
@@ -26,7 +29,16 @@ def dispatch_cab(trip_queue, cabs):
     for id,cab in enumerate(open_cabs,start=1):
         print(f"{id}. {cab}")
 
-    choice = int(input("Choose an open cab to dispatch (0 to cancel)"))
+    try:
+        choice = int(input("Choose an open cab to dispatch (0 to cancel)"))
+    except ValueError:
+        print("Invalid input. Please enter a number.")
+        return
+
+    if choice < 0 or choice > len(open_cabs):
+        print("Invalid choice.")
+        return
+
     if choice == 0:
         print("Dispatch cancelled.")
         return
@@ -45,7 +57,7 @@ def dispatch_cab(trip_queue, cabs):
     else:
         print("No new waiting students boarded.")
     
-    requests = [i[-1] for i in trip_queue.values() for req in i]
+    requests = [req[-1] for i in trip_queue.values() for req in i]
     save_requests(requests)
     save_cabs(cabs)
 
@@ -102,7 +114,7 @@ def add_ride_request(trip_queue):
         push_queue(request,trip_queue)
         print(f"Added request: {request}")
         
-        requests = [i[-1] for i in trip_queue.values() for req in i]
+        requests = [req[-1] for i in trip_queue.values() for req in i]
         save_requests(requests)
             
     except ValueError as err:
@@ -168,7 +180,7 @@ def main():
             dispatch_cab(trip_queue, cabs)
         elif choice == "5":
             save_cabs(cabs)
-            requests = [i[-1] for i in trip_queue.values() for req in i]
+            requests = [req[-1] for i in trip_queue.values() for req in i]
             save_requests(requests)
             print("Data saved. Goodbye!")
             break

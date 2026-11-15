@@ -1,1 +1,94 @@
-[]
+[
+  {
+    "driver_name": "Ramesh Kumar",
+    "seats": 4,
+    "destination": "Delhi",
+    "time_slot": "Morning",
+    "has_left": true,
+    "students": [
+      {
+        "student_name": "Isha Verma",
+        "destination": "Delhi",
+        "time_slot": "Morning",
+        "year": 4,
+        "submitted_at": "2026-11-14 08:15:00"
+      },
+      {
+        "student_name": "Aditya Rao",
+        "destination": "Delhi",
+        "time_slot": "Morning",
+        "year": 4,
+        "submitted_at": "2026-11-14 08:15:00"
+      },
+      {
+        "student_name": "Neha Joshi",
+        "destination": "Delhi",
+        "time_slot": "Morning",
+        "year": 3,
+        "submitted_at": "2026-11-14 08:20:00"
+      },
+      {
+        "student_name": "Pooja Nair",
+        "destination": "Delhi",
+        "time_slot": "Morning",
+        "year": 2,
+        "submitted_at": "2026-11-14 09:00:00"
+      }
+    ]
+  },
+  {
+    "driver_name": "Suresh Yadav",
+    "seats": 3,
+    "destination": "Delhi",
+    "time_slot": "Evening",
+    "has_left": false,
+    "students": [
+      {
+        "student_name": "Kabir Malhotra",
+        "destination": "Delhi",
+        "time_slot": "Evening",
+        "year": 3,
+        "submitted_at": "2026-11-13 18:05:00"
+      }
+    ]
+  },
+  {
+    "driver_name": "Mahesh Singh",
+    "seats": 4,
+    "destination": "Jaipur",
+    "time_slot": "Afternoon",
+    "has_left": false,
+    "students": []
+  },
+  {
+    "driver_name": "Dinesh Sharma",
+    "seats": 2,
+    "destination": "Jaipur",
+    "time_slot": "Night",
+    "has_left": false,
+    "students": []
+  },
+  {
+    "driver_name": "Vikram Chauhan",
+    "seats": 4,
+    "destination": "Delhi",
+    "time_slot": "Night",
+    "has_left": true,
+    "students": [
+      {
+        "student_name": "Ananya Gupta",
+        "destination": "Delhi",
+        "time_slot": "Night",
+        "year": 2,
+        "submitted_at": "2026-11-12 20:10:00"
+      },
+      {
+        "student_name": "Rohan Mehta",
+        "destination": "Delhi",
+        "time_slot": "Night",
+        "year": 4,
+        "submitted_at": "2026-11-12 20:30:00"
+      }
+    ]
+  }
+]
