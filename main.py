@@ -63,7 +63,7 @@ def dispatch_cab(trip_queue, cabs):
 
 
 def find_matches(trip_queue, cabs):
-    print("\n=== Match Preview (No Seats Assigned) **old ===")
+    print("\n=== Match Preview (No Seats Assigned) ===")
 
     open_cabs = [cab for cab in cabs if not cab.has_left]
 
