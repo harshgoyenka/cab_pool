@@ -1,9 +1,7 @@
 from methods import RideRequest,cities,time_slots
 from storage import load_cabs,save_cabs,load_requests,save_requests
 import heapq
-import itertools
 
-counter = itertools.count()
 
 def generate_queue(pending_requests):
     trip_queue={}
@@ -15,7 +13,7 @@ def push_queue(i,trip_queue):
     key = (i.destination,i.time_slot)
     if key not in trip_queue:
         trip_queue[key] = []
-    heapq.heappush(trip_queue[key],(-i.year,i.submitted_at,next(counter),i))
+    heapq.heappush(trip_queue[key],(-i.year,i.submitted_at,i))
 
 
 def dispatch_cab(trip_queue, cabs):
